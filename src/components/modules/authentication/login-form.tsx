@@ -13,6 +13,7 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
@@ -21,13 +22,23 @@ import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { toast } from "sonner";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
+
+const formSchema = z.object({
+  email: z.email({ error: "Email is Required" }),
+  password: z.string().min(1, "Please enter your Password."),
+});
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+
   const handleGoogleLogin = async () => {
-    const data = authClient.signIn.social({
+    authClient.signIn.social({
       provider: "google",
       callbackURL: "http://localhost:3000",
     });
@@ -38,8 +49,25 @@ export function LoginForm({
       email: "",
       password: "",
     },
+    validators: {
+      onSubmit: formSchema,
+    },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      const toastId = toast.loading("Logging in");
+      try {
+        const { data, error } = await authClient.signIn.email({
+          ...value,
+        });
+
+        if (data?.user) {
+          toast.success("User logged in successfully", { id: toastId });
+          router.push("/");
+        } else {
+          toast.error(error?.message, { id: toastId });
+        }
+      } catch (err) {
+        toast.error("Something Went Wrong", { id: toastId });
+      }
     },
   });
 
@@ -64,16 +92,22 @@ export function LoginForm({
               <form.Field
                 name="email"
                 children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
-                    <Field>
+                    <Field data-invalid={isInvalid}>
                       <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                       <Input
                         id={field.name}
                         name={field.name}
+                        type="email"
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
                         placeholder="Email"
                       />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
                     </Field>
                   );
                 }}
@@ -81,16 +115,22 @@ export function LoginForm({
               <form.Field
                 name="password"
                 children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
                     <Field>
                       <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                       <Input
                         id={field.name}
                         name={field.name}
+                        type="password"
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
                         placeholder="Password"
                       />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
                     </Field>
                   );
                 }}
