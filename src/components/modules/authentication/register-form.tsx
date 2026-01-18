@@ -64,7 +64,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form
-          id="login-form"
+          id="register-from"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
@@ -126,8 +126,8 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col">
-        <Button form="login-form" type="submit" className="w-full">
-          Login
+        <Button form="register-from" type="submit" className="w-full">
+          Register
         </Button>
         <div className="flex items-center w-full my-4 gap-4">
           <Separator orientation="horizontal" className="flex-1" />
@@ -144,7 +144,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         <CardDescription className="mt-4">
           Already Have an Account?{" "}
           <Link href="/login" className="underline">
-            Register
+            Login
           </Link>
         </CardDescription>
       </CardFooter>

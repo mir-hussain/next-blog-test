@@ -28,10 +28,10 @@ export function AppSidebar({
   let routes: Route[] = [];
 
   switch (user.role) {
-    case "admin":
+    case "ADMIN":
       routes = adminRoutes;
       break;
-    case "user":
+    case "USER":
       routes = userRoutes;
       break;
     default:
