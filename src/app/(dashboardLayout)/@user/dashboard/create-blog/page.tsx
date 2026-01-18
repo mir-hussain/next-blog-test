@@ -1,7 +1,6 @@
+import { CreateBlogForm } from "@/components/modules/user/createBlog/CreateBlogForm";
+import { Card } from "@/components/ui/card";
+
 export default function CreateBlogPage() {
-  return (
-    <div>
-      <h1> Create Blog </h1>
-    </div>
-  );
+  return <CreateBlogForm />;
 }
