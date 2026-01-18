@@ -9,20 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { toast } from "sonner";
 
-export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
+export function CreateBlogForm({
+  ...props
+}: React.ComponentProps<typeof Card>) {
   const handleGoogleLogin = async () => {
     authClient.signIn.social({
       provider: "google",
@@ -32,22 +30,16 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      title: "",
+      content: "",
+      tags: "",
     },
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Creating....");
       try {
-        const { data, error } = await authClient.signUp.email({
-          ...value,
-        });
-
-        if (data?.user) {
-          toast.success("User created successfully", { id: toastId });
-        } else {
-          toast.error(error?.message, { id: toastId });
-        }
+        //Something here
+        console.log(value);
+        toast.success("Post Created");
       } catch (err) {
         toast.error("Something Went Wrong", { id: toastId });
       }
@@ -64,7 +56,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form
-          id="register-from"
+          id="blog-post"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
@@ -72,51 +64,53 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         >
           <FieldGroup>
             <form.Field
-              name="name"
+              name="title"
               children={(field) => {
                 return (
                   <Field>
-                    <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
                     <Input
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Email"
+                      placeholder="Blog Title"
                     />
                   </Field>
                 );
               }}
             />
             <form.Field
-              name="email"
+              name="content"
               children={(field) => {
                 return (
                   <Field>
-                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                    <Input
+                    <FieldLabel htmlFor={field.name}>Content</FieldLabel>
+                    <Textarea
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Email"
+                      placeholder="Write your blog"
                     />
                   </Field>
                 );
               }}
             />
             <form.Field
-              name="password"
+              name="tags"
               children={(field) => {
                 return (
                   <Field>
-                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Tags (comma separated)
+                    </FieldLabel>
                     <Input
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Password"
+                      placeholder="nextjs, web"
                     />
                   </Field>
                 );
@@ -126,27 +120,9 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col">
-        <Button form="register-from" type="submit" className="w-full">
-          Register
+        <Button form="blog-post" type="submit" className="w-full">
+          Post
         </Button>
-        <div className="flex items-center w-full my-4 gap-4">
-          <Separator orientation="horizontal" className="flex-1" />
-          <small className="text-accent-foreground">Or</small>
-          <Separator orientation="horizontal" className="flex-1" />
-        </div>
-        <Button
-          onClick={handleGoogleLogin}
-          variant="outline"
-          className="w-full"
-        >
-          Continue with Google
-        </Button>
-        <CardDescription className="mt-4">
-          Already Have an Account?{" "}
-          <Link href="/login" className="underline">
-            Login
-          </Link>
-        </CardDescription>
       </CardFooter>
     </Card>
   );
