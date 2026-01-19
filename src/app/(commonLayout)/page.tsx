@@ -1,10 +1,11 @@
 import BlogCard from "@/components/modules/homepage/BlogCard";
-import { postService } from "@/services/post.service";
+import { blogService } from "@/services/blog.service";
+
 import { BlogPost } from "@/types";
 
 export default async function Home() {
-  const featuredPostsPromise = postService.getPosts({ isFeatured: true });
-  const postsPromise = postService.getPosts();
+  const featuredPostsPromise = blogService.getBlogPosts({ isFeatured: true });
+  const postsPromise = blogService.getBlogPosts();
 
   const [featuredPosts, posts] = await Promise.all([
     featuredPostsPromise,
@@ -32,7 +33,10 @@ export default async function Home() {
 
   return (
     <div className="grid grid-cols-3 max-w-7xl mx-auto px-4 gap-5">
-      {posts?.data?.map((post: BlogPost) => (
+      {posts?.error?.message ? (
+        <p className="text-red-500">{posts?.error?.message}</p>
+      ) : null}
+      {posts?.data?.data?.map((post: BlogPost) => (
         <BlogCard key={post.id} post={post} />
       ))}
     </div>

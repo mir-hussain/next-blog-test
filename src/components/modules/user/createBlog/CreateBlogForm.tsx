@@ -1,5 +1,6 @@
 "use client";
 
+import { createBlogPost } from "@/actions/blog.action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,23 +12,11 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
-import Link from "next/link";
 import { toast } from "sonner";
 
-export function CreateBlogForm({
-  ...props
-}: React.ComponentProps<typeof Card>) {
-  const handleGoogleLogin = async () => {
-    authClient.signIn.social({
-      provider: "google",
-      callbackURL: "http://localhost:3000",
-    });
-  };
-
+export function CreateBlogForm() {
   const form = useForm({
     defaultValues: {
       title: "",
@@ -37,9 +26,15 @@ export function CreateBlogForm({
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Creating....");
       try {
-        //Something here
-        console.log(value);
-        toast.success("Post Created");
+        // Something here
+        const res = await createBlogPost(value);
+
+        if (res.error) {
+          toast.error(res.error.message, { id: toastId });
+          return;
+        }
+
+        toast.success("Post Created", { id: toastId });
       } catch (err) {
         toast.error("Something Went Wrong", { id: toastId });
       }
@@ -47,7 +42,7 @@ export function CreateBlogForm({
   });
 
   return (
-    <Card {...props}>
+    <Card>
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>

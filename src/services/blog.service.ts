@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { userService } from "./user.service";
 
 const API_URL = env.API_URL;
 
@@ -24,6 +24,14 @@ export const blogService = {
     options?: ServiceOptions,
   ) {
     try {
+      // const session = await userService.getUser();
+
+      // console.log(session);
+
+      // if (!session?.user) {
+      //   return { data: null, error: { message: "User not logged in." } };
+      // }
+
       const url = new URL(`${API_URL}/posts`);
 
       if (params) {

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function AboutPage() {
   const [blogPosts, setBlogPosts] = useState();
+  const [error, setError] = useState<{ message: string } | null>();
 
   //* For simulating load time
   // await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -17,6 +18,7 @@ export default function AboutPage() {
       const blogPosts = await getBlogPosts();
 
       setBlogPosts(blogPosts.data);
+      setError(blogPosts?.error);
     })();
   }, []);
 
@@ -25,6 +27,7 @@ export default function AboutPage() {
   return (
     <div>
       <h1> This is about page component </h1>
+      {error && <p>{error.message}</p>}
     </div>
   );
 }
