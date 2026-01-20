@@ -41,6 +41,9 @@ export function AppSidebar({
 
   return (
     <Sidebar {...props}>
+      <SidebarHeader className="grid place-content-center h-16 text-2xl">
+        <Link href="/">Next Blog</Link>
+      </SidebarHeader>
       <SidebarContent>
         {routes.map((item) => (
           <SidebarGroup key={item.title}>

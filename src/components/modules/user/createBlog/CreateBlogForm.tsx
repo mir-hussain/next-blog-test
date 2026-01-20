@@ -25,9 +25,19 @@ export function CreateBlogForm() {
     },
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Creating....");
+
+      const blogData = {
+        ...value,
+        tags: value.tags.split(",").map((item) => item.trim()),
+      };
+
+      console.log(blogData);
+
       try {
         // Something here
-        const res = await createBlogPost(value);
+        const res = await createBlogPost(JSON.stringify(blogData));
+
+        console.log(res);
 
         if (res.error) {
           toast.error(res.error.message, { id: toastId });

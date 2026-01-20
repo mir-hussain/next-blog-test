@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { userService } from "./user.service";
+import { updateTag } from "next/cache";
 
 const API_URL = env.API_URL;
 
@@ -52,6 +52,8 @@ export const blogService = {
         config.next = { revalidate: options.revalidate };
       }
 
+      config.next = { ...config, tags: ["blogPosts"] };
+
       const res = await fetch(url.toString(), config);
 
       const data = await res.json();
@@ -71,22 +73,26 @@ export const blogService = {
     try {
       const cookieStore = await cookies();
 
+      console.log(blogData);
+
       const res = await fetch(`${API_URL}/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieStore.toString(),
         },
-        body: JSON.stringify(blogData),
+        body: blogData,
         credentials: "include",
       });
 
       const data = await res.json();
 
-      if (!data.data) {
+      console.log(data);
+
+      if (data.error) {
         return {
           data: null,
-          error: { message: data.message || "Failed to create blog" },
+          error: { message: data.error || "Failed to create blog" },
         };
       }
 

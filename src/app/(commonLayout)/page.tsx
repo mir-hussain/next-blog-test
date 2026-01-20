@@ -5,15 +5,12 @@ import { BlogPost } from "@/types";
 
 export default async function Home() {
   const featuredPostsPromise = blogService.getBlogPosts({ isFeatured: true });
-  const postsPromise = blogService.getBlogPosts();
+  const postsPromise = blogService.getBlogPosts({}, { revalidate: 10 });
 
   const [featuredPosts, posts] = await Promise.all([
     featuredPostsPromise,
     postsPromise,
   ]);
-
-  console.log(featuredPosts);
-  console.log(posts);
 
   // console.time("sequential");
 

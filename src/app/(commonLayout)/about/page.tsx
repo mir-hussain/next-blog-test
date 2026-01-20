@@ -22,8 +22,6 @@ export default function AboutPage() {
     })();
   }, []);
 
-  console.log(blogPosts);
-
   return (
     <div>
       <h1> This is about page component </h1>
